@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "speech-card",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}
