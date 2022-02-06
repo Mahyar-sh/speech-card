@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
 import Tab1Decks from '../components/tabs-components/Tab1Decks';
 import './Tab1.css';
 
+import {firstWords} from '../data/firstdata';
+import { Deck } from '../models/deck';
+
 const Tab1: React.FC = () => {
+  const [data,setData]= useState<Deck[]>(firstWords);
+
   return (
     <IonPage>
       <IonHeader>
@@ -19,7 +24,7 @@ const Tab1: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         {/* <ExploreContainer name="Tab 1 page" /> */}
-        <Tab1Decks/>
+        <Tab1Decks data={data} />
       </IonContent>
     </IonPage>
   );
