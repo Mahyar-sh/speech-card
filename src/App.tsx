@@ -1,8 +1,11 @@
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
+  IonCard,
   IonIcon,
+  IonItem,
   IonLabel,
+  IonList,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
@@ -10,10 +13,8 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, home, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
+import { ellipse, home, square,  } from 'ionicons/icons';
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -34,28 +35,64 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
+// import data
+import { firstWords } from './data/firstdata';
+// import models & types of data
+import { Deck } from './models/deck';
+import { Card } from './models/card';
+
+// import components & pages
+import Home from './pages/Home';
+import Tab2 from './pages/Tab2';
+import Tab3 from './pages/Tab3';
+import Decks from './components/Decks'
+
 setupIonicReact();
 
+// const decks= (firstWords:Deck[])=> {
+//   return(
+//     firstWords.map((item:Deck)=>{
+//       console.log(item.name);
+//       return(
+//       <Route exact path={`/home/${item.name}`} >
+//           <IonList>
+//               words list
+//               {item.words.map((word:Card)=>{
+//                   <IonItem>
+//                       <IonCard>
+//                           {word.word}
+//                           <br/>
+//                           {word.meanning}
+//                       </IonCard>
+//                   </IonItem>
+//               })}
+//           </IonList>
+//       </Route>
+//       );
+//   })
+//   );
+// };
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/tab1">
-            <Tab1 />
+          <Route exact path="/home">
+            <Home />
           </Route>
           <Route exact path="/tab2">
             <Tab2 />
           </Route>
-          <Route path="/tab3">
+          <Route exact path="/tab3">
             <Tab3 />
           </Route>
+          <Decks firstWords={firstWords} />
           <Route exact path="/">
-            <Redirect to="/tab1" />
+            <Redirect to="/home" />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
+          <IonTabButton tab="home" href="/home">
             <IonIcon icon={home} />
             <IonLabel>home</IonLabel>
           </IonTabButton>
