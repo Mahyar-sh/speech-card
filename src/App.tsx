@@ -1,11 +1,8 @@
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
-  IonCard,
   IonIcon,
-  IonItem,
   IonLabel,
-  IonList,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
@@ -39,46 +36,33 @@ import './theme/variables.css';
 import { firstWords } from './data/firstdata';
 // import models & types of data
 import { Deck } from './models/deck';
-import { Card } from './models/card';
 
 // import components & pages
 import Home from './pages/Home';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
 import Decks from './components/Decks'
+import { useEffect, useState } from 'react';
 
 setupIonicReact();
+const App: React.FC = () => {
+  const [data,setData]= useState<Deck[]>(firstWords);
 
-// const decks= (firstWords:Deck[])=> {
-//   return(
-//     firstWords.map((item:Deck)=>{
-//       console.log(item.name);
-//       return(
-//       <Route exact path={`/home/${item.name}`} >
-//           <IonList>
-//               words list
-//               {item.words.map((word:Card)=>{
-//                   <IonItem>
-//                       <IonCard>
-//                           {word.word}
-//                           <br/>
-//                           {word.meanning}
-//                       </IonCard>
-//                   </IonItem>
-//               })}
-//           </IonList>
-//       </Route>
-//       );
-//   })
-//   );
-// };
-const App: React.FC = () => (
+  const addNewDeck = (info:any):any =>{
+      setData(info);
+      console.log(info);
+  };
+
+  return(
+
   <IonApp>
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/home">
-            <Home />
+          <Route exact path="/home" >
+            <Home data={data} 
+            addNewDeck={addNewDeck} 
+            />
           </Route>
           <Route exact path="/tab2">
             <Tab2 />
@@ -86,7 +70,7 @@ const App: React.FC = () => (
           <Route exact path="/tab3">
             <Tab3 />
           </Route>
-          <Decks firstWords={firstWords} />
+          <Decks data={data} />
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
@@ -108,6 +92,7 @@ const App: React.FC = () => (
       </IonTabs>
     </IonReactRouter>
   </IonApp>
-);
+  );
+};
 
 export default App;

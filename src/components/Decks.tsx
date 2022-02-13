@@ -2,15 +2,21 @@ import React , {Fragment} from "react";
 import { Route } from "react-router-dom";
 import {Deck} from '../models/deck';
 import {Card} from '../models/card';
-import { IonCard, IonItem, IonList } from "@ionic/react";
+import { IonButton, IonCard, IonIcon, IonItem, IonList } from "@ionic/react";
+import { home, returnUpBack } from "ionicons/icons";
 
 type DecksProps ={
-firstWords:Deck[]
-}
-const Decks:React.FC<DecksProps> = ({firstWords}):any|undefined =>{
+data:Deck[]
+};
+const Decks:React.FC<DecksProps> = ({data}):any|undefined =>{
+
     return(
         <Fragment >
-            {firstWords.map((item:Deck,index)=>{
+            <IonButton href={`/home`}>
+            <IonIcon icon={returnUpBack} ></IonIcon>
+            </IonButton>
+
+            {data.map((item:Deck,index)=>{
                 console.log(item.name);
                 return(
                 <Route key={index} exact path={`/home/${item.name}`} >
@@ -20,15 +26,14 @@ const Decks:React.FC<DecksProps> = ({firstWords}):any|undefined =>{
                         </IonCard>
                         {item.words.map((word:Card, index)=>{
                             return(
-
-                            <IonItem key={index}>
-                                <IonCard>
-                                    {word.word}
-                                    <br/>
-                                    {word.meanning}
-                                </IonCard>
-                            </IonItem>
-                            );
+                                <IonItem key={index}>
+                                    <IonCard>
+                                        {word.word}
+                                        <br/>
+                                        {word.meanning}
+                                    </IonCard>
+                                </IonItem>
+                            )
                         })}
                     </IonList>
                 </Route>

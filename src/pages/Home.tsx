@@ -1,34 +1,45 @@
 import React, { useState } from 'react';
-import { Redirect, Route } from 'react-router-dom';
 
-import { IonButton, IonCard, IonContent, IonHeader, IonItem, IonLabel, IonPage, IonRouterOutlet, IonTabBar, IonTabButton, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import Tab1Decks from '../components/tabs-components/Tab1Decks';
+import { IonButton, IonCard, IonContent, IonHeader, IonInput, IonItem, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+
 import './Home.css';
 
-import {firstWords} from '../data/firstdata';
 import { Deck } from '../models/deck';
-import { IonReactRouter } from '@ionic/react-router';
 
+type HomeProps = {
+  data:Deck[],
+  addNewDeck: (info:any)=> void
+};
 
-const Home: React.FC = () => {
-  const [data,setData]= useState<Deck[]>(firstWords);
+const Home: React.FC<HomeProps> = ({data , addNewDeck}) => {
+  const [inputData,setInputData] = useState('');
+  const addDeck= (e:React.MouseEvent)=>{
+      if(inputData!==''){
+        console.log(inputData)
+        const allDecks:Deck[] = [...data] ;
+        const plus = {name:inputData,words:[{word:'word1',meanning:'mean1'}]};
+        allDecks.push(plus);
 
-  const decks = (info: any | undefined):any => {
+        addNewDeck(allDecks);
+        setInputData('');
+      }
+  };
+ const inputChange=(e:any)=>{
+    setInputData(e.target.value);
+ };
+  const decks = (info: Deck[] ):any => {
     return(
-
-      info.map((item:any | undefined, index:number ):any | undefined =>{
-        console.log(item.name);
-        return(
-          <IonCard key={index} href={`/home/${item.name}`}>
-          {item.name}
-        </IonCard>
-      );
-    })
-
+        info.map((item:any | undefined, index:number ):any | undefined =>{
+          return(
+            <IonCard key={index} href={`/home/${item.name}`}>
+            {item.name}
+            </IonCard>
+          );
+        } 
+      )
     );
   };
-  // console.log();
+
   return (
     <IonPage>
       <IonHeader>
@@ -43,6 +54,14 @@ const Home: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         {decks(data)}
+        <IonItem>
+          <IonInput value={inputData} 
+          onIonChange={(e)=>inputChange(e)} placeholder='Add New Deck' ></IonInput>
+        </IonItem>
+        <IonButton expand='full' 
+        shape='round'
+        onClick={(e)=>addDeck(e)}
+         >Add</IonButton>
       </IonContent>
     </IonPage>
   );
