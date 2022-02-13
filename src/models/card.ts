@@ -1,4 +1,4 @@
 export type Card = {
-    word: string,
-    meanning:string
+    word?: string,
+    meanning?:string
 }
