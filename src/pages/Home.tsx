@@ -13,17 +13,7 @@ type HomeProps = {
 
 const Home: React.FC<HomeProps> = ({data , addNewDeck}) => {
   const [inputData,setInputData] = useState('');
-  const addDeck= (e:React.MouseEvent)=>{
-      if(inputData!==''){
-        console.log(inputData)
-        const allDecks:Deck[] = [...data] ;
-        const plus = {name:inputData,words:[{word:'word1',meanning:'mean1'}]};
-        allDecks.push(plus);
-
-        addNewDeck(allDecks);
-        setInputData('');
-      }
-  };
+  
  const inputChange=(e:any)=>{
     setInputData(e.target.value);
  };
@@ -31,8 +21,11 @@ const Home: React.FC<HomeProps> = ({data , addNewDeck}) => {
     return(
         info.map((item:any | undefined, index:number ):any | undefined =>{
           return(
-            <IonCard key={index} href={`/home/${item.name}`}>
-            {item.name}
+            
+            <IonCard key={index}
+              // onClick={(e)=> {e.preventDefault()}}
+              routerLink={`/home/${item.name}`} >
+              {item.name}
             </IonCard>
           );
         } 
@@ -60,7 +53,7 @@ const Home: React.FC<HomeProps> = ({data , addNewDeck}) => {
         </IonItem>
         <IonButton expand='full' 
         shape='round'
-        onClick={(e)=>addDeck(e)}
+        onClick={(e)=>{inputData && addNewDeck(inputData);setInputData('')}}
          >Add</IonButton>
       </IonContent>
     </IonPage>

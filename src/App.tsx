@@ -42,14 +42,18 @@ import Home from './pages/Home';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
 import Decks from './components/Decks'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 setupIonicReact();
 const App: React.FC = () => {
   const [data,setData]= useState<Deck[]>(firstWords);
 
-  const addNewDeck = (info:any):any =>{
-      setData(info);
+  const addNewDeck = (info:any):void =>{
+    
+    const newDeck:Deck= {name:info,words:[]};
+    const allDeck:Deck[]= data;
+    allDeck.push(newDeck);  
+    setData(allDeck);
       console.log(info);
   };
 

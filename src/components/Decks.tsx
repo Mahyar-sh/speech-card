@@ -12,7 +12,9 @@ const Decks:React.FC<DecksProps> = ({data}):any|undefined =>{
 
     return(
         <Fragment >
-            <IonButton href={`/home`}>
+            <IonButton routerLink="/home" 
+            // onClick={e=> e.preventDefault()}
+             >
             <IonIcon icon={returnUpBack} ></IonIcon>
             </IonButton>
 
