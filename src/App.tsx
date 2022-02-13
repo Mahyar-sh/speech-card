@@ -10,7 +10,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, home, square,  } from 'ionicons/icons';
+import { card, ellipse, home, push, square,  } from 'ionicons/icons';
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -43,10 +43,12 @@ import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
 import Decks from './components/Decks'
 import { useState } from 'react';
+import { Card } from './models/card';
 
 setupIonicReact();
 const App: React.FC = () => {
   const [data,setData]= useState<Deck[]>(firstWords);
+  // const [helpRender,setHelpRender] = useState<boolean>(true);
 
   const addNewDeck = (info:any):void =>{
     
@@ -54,7 +56,32 @@ const App: React.FC = () => {
     const allDeck:Deck[]= data;
     allDeck.push(newDeck);  
     setData(allDeck);
-      console.log(info);
+    // setHelpRender(!helpRender);
+      // console.log(info);
+  };
+  const onDeleteDeck=(indexNumber:number)=>{
+    if(window.confirm('Do you want to delete deck?')){
+      const allDeck:Deck[]=data;
+      allDeck.splice(indexNumber,1);
+      setData(allDeck);
+      // setHelpRender(!helpRender);
+
+      
+    }
+  }
+  const onDeleteWords= (n:number,i:number)=> {
+    data[i].words.splice(n,1);
+    setData(data);
+    // setHelpRender(!helpRender);
+
+    // console.log(data[i].words[n]);
+    // console.log(data[i]);
+  }
+  const addNewWord= (word:string,meanning:string, index:number):void =>{
+    const currentDeck:Deck=data[index];
+    currentDeck.words.push({word:word,meanning:meanning});
+    data.splice(index,1,currentDeck);
+    setData(data);
   };
 
   return(
@@ -65,7 +92,8 @@ const App: React.FC = () => {
         <IonRouterOutlet>
           <Route exact path="/home" >
             <Home data={data} 
-            addNewDeck={addNewDeck} 
+            addNewDeck={addNewDeck}
+            onDeleteItem={(i:number)=> onDeleteDeck(i)} 
             />
           </Route>
           <Route exact path="/tab2">
@@ -74,7 +102,7 @@ const App: React.FC = () => {
           <Route exact path="/tab3">
             <Tab3 />
           </Route>
-          <Decks data={data} />
+          <Decks onDeleteWords={onDeleteWords} onAddWord={addNewWord} data={data} />
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>

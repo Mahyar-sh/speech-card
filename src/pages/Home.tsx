@@ -1,31 +1,50 @@
 import React, { useState } from 'react';
 
-import { IonButton, IonCard, IonContent, IonHeader, IonInput, IonItem, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonCard, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonPage, IonRouterLink, IonTab, IonTabButton, IonTitle, IonToolbar } from '@ionic/react';
+import {closeCircle} from 'ionicons/icons';
 
 import './Home.css';
 
 import { Deck } from '../models/deck';
 
+import DeleteItem from '../components/DeleteItem';
+import { Link } from 'react-router-dom';
+
 type HomeProps = {
   data:Deck[],
-  addNewDeck: (info:any)=> void
+  addNewDeck: (info:any)=> void,
+  onDeleteItem:(i:number)=>void,
 };
 
-const Home: React.FC<HomeProps> = ({data , addNewDeck}) => {
+const Home: React.FC<HomeProps> = ({data , addNewDeck, onDeleteItem}) => {
   const [inputData,setInputData] = useState('');
   
  const inputChange=(e:any)=>{
     setInputData(e.target.value);
  };
+
+const onHandleDeleteItem= (i:number)=>{
+  onDeleteItem(i);
+  setInputData('');
+}
   const decks = (info: Deck[] ):any => {
     return(
         info.map((item:any | undefined, index:number ):any | undefined =>{
           return(
             
-            <IonCard key={index}
+            <IonCard className='row' key={index}
               // onClick={(e)=> {e.preventDefault()}}
-              routerLink={`/home/${item.name}`} >
-              {item.name}
+               >
+                 <div className='itemName'>
+                <Link color='dark' to={`/home/${item.name}`}>{item.name}</Link>
+
+                 </div>
+                 <div className='deleteItem'>
+                <IonItem><DeleteItem 
+                i={index}
+                onDeleteItem={(i:number)=> onHandleDeleteItem(i)}  /></IonItem>
+
+                 </div>
             </IonCard>
           );
         } 
