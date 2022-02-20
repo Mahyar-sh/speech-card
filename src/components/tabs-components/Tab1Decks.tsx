@@ -2,12 +2,12 @@ import React, {Fragment,useEffect, useState} from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton } from '@ionic/react';
 import { pin, wifi, wine, warning, walk } from 'ionicons/icons';
 import HomeDeck from './HomeDeck';
-import { Deck } from '../../models/deck';
+import { DeckModel } from '../../models/deck.model';
 import { IonReactRouter } from '@ionic/react-router';
 
 
 type Tab1DecksProps={
-    data: Deck[]
+    data: DeckModel[]
 }
 
 const Tab1Decks: React.FC<Tab1DecksProps> = ({data}):any|undefined => {

@@ -1,8 +1,8 @@
 import { Redirect, Route } from 'react-router-dom';
 import {
-  IonApp,
-  IonIcon,
-  IonLabel,
+  IonApp, IonButton, IonCard,
+  IonIcon, IonInput, IonItem,
+  IonLabel, IonList, IonPage,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
@@ -10,7 +10,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { card, ellipse, home, push, square,  } from 'ionicons/icons';
+import { car, card, ellipse, home, push, square, } from 'ionicons/icons';
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -35,25 +35,24 @@ import './theme/variables.css';
 // import data
 import { firstWords } from './data/firstdata';
 // import models & types of data
-import { Deck } from './models/deck';
+import { DeckModel } from './models/deck.model';
 
-// import components & pages
-import Home from './pages/Home';
+import DecksPage from './pages/Decks.page';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
-import Decks from './components/Decks'
-import { useState } from 'react';
-import { Card } from './models/card';
+import React, { useState } from 'react';
+import DeckPage from './pages/Deck.page';
+import deck from "./pages/Deck.page";
 
 setupIonicReact();
 const App: React.FC = () => {
-  const [data,setData]= useState<Deck[]>(firstWords);
+  const [data,setData]= useState<DeckModel[]>(firstWords);
   // const [helpRender,setHelpRender] = useState<boolean>(true);
 
   const addNewDeck = (info:any):void =>{
     
-    const newDeck:Deck= {name:info,words:[]};
-    const allDeck:Deck[]= data;
+    const newDeck:DeckModel= {name:info,words:[]};
+    const allDeck:DeckModel[]= data;
     allDeck.push(newDeck);  
     setData(allDeck);
     // setHelpRender(!helpRender);
@@ -61,28 +60,30 @@ const App: React.FC = () => {
   };
   const onDeleteDeck=(indexNumber:number)=>{
     if(window.confirm('Do you want to delete deck?')){
-      const allDeck:Deck[]=data;
+      const allDeck:DeckModel[]=data;
       allDeck.splice(indexNumber,1);
       setData(allDeck);
       // setHelpRender(!helpRender);
-
-      
     }
   }
-  const onDeleteWords= (n:number,i:number)=> {
-    data[i].words.splice(n,1);
+
+  const addNewWord= (word:string,meaning:string, deckIndex:number): void =>{
+    const oldData = [...data];
+    const currentDeck:DeckModel = oldData[deckIndex];
+    currentDeck.words.push({word:word,meaning:meaning});
+    oldData.splice(deckIndex,1, currentDeck);
+    setData(oldData);
+  };
+
+
+  const onDeleteWords= (cardIndex: number, deckIndex:number)=> {
+    data[deckIndex].words.splice(cardIndex,1);
     setData(data);
     // setHelpRender(!helpRender);
 
     // console.log(data[i].words[n]);
     // console.log(data[i]);
   }
-  const addNewWord= (word:string,meanning:string, index:number):void =>{
-    const currentDeck:Deck=data[index];
-    currentDeck.words.push({word:word,meanning:meanning});
-    data.splice(index,1,currentDeck);
-    setData(data);
-  };
 
   return(
 
@@ -90,27 +91,39 @@ const App: React.FC = () => {
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/home" >
-            <Home data={data} 
-            addNewDeck={addNewDeck}
-            onDeleteItem={(i:number)=> onDeleteDeck(i)} 
+          <Route path="/decks" exact={true}>
+            <DecksPage data={data}
+                       addNewDeck={addNewDeck}
+                       onDeleteItem={(i:number)=> onDeleteDeck(i)}
             />
           </Route>
+          {data.map((item:DeckModel, index)=> {
+            const deckIndex= index;
+            return(
+                <Route key={index} path={`/home/${item.name}`} >
+                  <DeckPage onAddWord={(word, meaning)=>{
+                    addNewWord(word, meaning, deckIndex)
+                  }} deck={item} onDeleteWord={(cardIndex)=> {
+                    onDeleteWords(cardIndex, deckIndex)
+                  }}/>
+                </Route>
+            );
+          })}
           <Route exact path="/tab2">
             <Tab2 />
           </Route>
           <Route exact path="/tab3">
             <Tab3 />
           </Route>
-          <Decks onDeleteWords={onDeleteWords} onAddWord={addNewWord} data={data} />
+          {/*<Decks onDeleteWords={onDeleteWords} onAddWord={addNewWord} data={data} />*/}
           <Route exact path="/">
-            <Redirect to="/home" />
+            <Redirect to="/decks" />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="home" href="/home">
             <IonIcon icon={home} />
-            <IonLabel>home</IonLabel>
+            <IonLabel>Decks</IonLabel>
           </IonTabButton>
           <IonTabButton tab="tab2" href="/tab2">
             <IonIcon icon={ellipse} />

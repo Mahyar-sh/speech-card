@@ -3,20 +3,20 @@ import React, { useState } from 'react';
 import { IonButton, IonCard, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonPage, IonRouterLink, IonTab, IonTabButton, IonTitle, IonToolbar } from '@ionic/react';
 import {closeCircle} from 'ionicons/icons';
 
-import './Home.css';
+import './Decks.page.css';
 
-import { Deck } from '../models/deck';
+import { DeckModel } from '../models/deck.model';
 
 import DeleteItem from '../components/DeleteItem';
 import { Link } from 'react-router-dom';
 
 type HomeProps = {
-  data:Deck[],
+  data:DeckModel[],
   addNewDeck: (info:any)=> void,
   onDeleteItem:(i:number)=>void,
 };
 
-const Home: React.FC<HomeProps> = ({data , addNewDeck, onDeleteItem}) => {
+const DecksPage: React.FC<HomeProps> = ({data , addNewDeck, onDeleteItem}) => {
   const [inputData,setInputData] = useState('');
   
  const inputChange=(e:any)=>{
@@ -27,7 +27,7 @@ const onHandleDeleteItem= (i:number)=>{
   onDeleteItem(i);
   setInputData('');
 }
-  const decks = (info: Deck[] ):any => {
+  const decks = (info: DeckModel[] ):any => {
     return(
         info.map((item:any | undefined, index:number ):any | undefined =>{
           return(
@@ -68,7 +68,7 @@ const onHandleDeleteItem= (i:number)=>{
         {decks(data)}
         <IonItem>
           <IonInput value={inputData} 
-          onIonChange={(e)=>inputChange(e)} placeholder='Add New Deck' ></IonInput>
+          onIonChange={(e)=>inputChange(e)} placeholder='Add New DeckPage' ></IonInput>
         </IonItem>
         <IonButton expand='full' 
         shape='round'
@@ -78,4 +78,4 @@ const onHandleDeleteItem= (i:number)=>{
     </IonPage>
   );
 };
-export default Home;
+export default DecksPage;
