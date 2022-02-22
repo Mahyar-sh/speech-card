@@ -47,23 +47,19 @@ import deck from "./pages/Deck.page";
 setupIonicReact();
 const App: React.FC = () => {
   const [data,setData]= useState<DeckModel[]>(firstWords);
-  // const [helpRender,setHelpRender] = useState<boolean>(true);
 
   const addNewDeck = (info:any):void =>{
     
     const newDeck:DeckModel= {name:info,words:[]};
-    const allDeck:DeckModel[]= data;
-    allDeck.push(newDeck);  
-    setData(allDeck);
-    // setHelpRender(!helpRender);
-      // console.log(info);
+    const oldData:DeckModel[]= [...data];
+    oldData.push(newDeck);  
+    setData(oldData);
   };
-  const onDeleteDeck=(indexNumber:number)=>{
+  const onDeleteDeck=(deckIndex:number)=>{
     if(window.confirm('Do you want to delete deck?')){
-      const allDeck:DeckModel[]=data;
-      allDeck.splice(indexNumber,1);
-      setData(allDeck);
-      // setHelpRender(!helpRender);
+      const oldData:DeckModel[]=[...data];
+      oldData.splice(deckIndex,1);
+      setData(oldData);
     }
   }
 
@@ -77,12 +73,9 @@ const App: React.FC = () => {
 
 
   const onDeleteWords= (cardIndex: number, deckIndex:number)=> {
-    data[deckIndex].words.splice(cardIndex,1);
-    setData(data);
-    // setHelpRender(!helpRender);
-
-    // console.log(data[i].words[n]);
-    // console.log(data[i]);
+    const oldData:DeckModel[] = [...data];
+    oldData[deckIndex].words.splice(cardIndex,1);
+    setData(oldData);
   }
 
   return(
@@ -100,7 +93,7 @@ const App: React.FC = () => {
           {data.map((item:DeckModel, index)=> {
             const deckIndex= index;
             return(
-                <Route key={index} path={`/home/${item.name}`} >
+                <Route key={index} path={`/decks/${item.name}`} >
                   <DeckPage onAddWord={(word, meaning)=>{
                     addNewWord(word, meaning, deckIndex)
                   }} deck={item} onDeleteWord={(cardIndex)=> {
@@ -121,7 +114,7 @@ const App: React.FC = () => {
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
-          <IonTabButton tab="home" href="/home">
+          <IonTabButton tab="decks" href="/decks">
             <IonIcon icon={home} />
             <IonLabel>Decks</IonLabel>
           </IonTabButton>
