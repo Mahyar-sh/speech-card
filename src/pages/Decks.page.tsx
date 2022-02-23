@@ -19,18 +19,15 @@ type DecksPageProps = {
 const DecksPage: React.FC<DecksPageProps> = ({data , addNewDeck, onDeleteItem}) => {
 
   const [inputData,setInputData] = useState('');
-  const [openModal,setOpenModal] = useState<boolean>(false);
+  const [showModal,setshowModal] = useState(false);
  const inputChange=(e:any)=>{
-    setInputData(e.target.value);
+    setInputData(e.detail.value);
  };
 
 const onHandleDeleteItem= (i:number)=>{
   onDeleteItem(i);
   setInputData('');
 }
-const onOpenModalSheet= ()=>{
-  setOpenModal(true);
-};
   const decks = (info: DeckModel[] ):any => {
     return(
         info.map((item:any | undefined, index:number ):any | undefined =>{
@@ -65,7 +62,6 @@ const onOpenModalSheet= ()=>{
           </IonToolbar>
         </IonHeader>
         {decks(data)}
-        
 
          {/* <IonFab  vertical='bottom' horizontal='end' slot='fixed'>
           <IonFabButton>
@@ -84,37 +80,56 @@ const onOpenModalSheet= ()=>{
           </IonFabList>
          </IonFab> */}
 
-      <IonModal
-        isOpen={openModal}
-        breakpoints={[0, 0.8, 1]}
-        initialBreakpoint={0.8}
-        onDidDismiss={()=>{setOpenModal(false)}}
-      >
-        <IonContent>
-          <IonCardHeader>
-            <IonTitle 
-                    // style={{padding:'40px', marginBottom:'30px'}}
-                    >Add New Deck</IonTitle>
+    
+    <IonContent>
+      
 
-          </IonCardHeader>
-          <IonCardContent>
-            <IonItem>
-            <IonInput value={inputData} 
-              onIonChange={(e)=>inputChange(e)} placeholder='Add New DeckPage' ></IonInput>
-            </IonItem>
-            <IonButton expand='full' 
-            shape='round'
-            onClick={(e)=>{inputData && addNewDeck(inputData);setInputData(''); setOpenModal(false)}}
-            >Add</IonButton>
-          </IonCardContent>
+    
+      <IonModal isOpen={showModal}
+                // initialBreakpoint={0.8}
+                // onDidDismiss={()=>setshowModal(false)}
+                >
+        <IonContent>
+        <IonToolbar>
+          <IonTitle>
+          ADD A NEW DECK
+          </IonTitle>
+        </IonToolbar>
+         <IonItem style={{margin:'40px 0'}}>
+         <IonInput value={inputData} 
+                onIonChange={(e)=>inputChange(e)} placeholder='Enter a new Deck' >
+                </IonInput>
+         </IonItem>
+          
+              <IonButton expand='full' 
+              shape='round'
+              onClick={(e)=>{
+                console.log(inputData);
+                if(inputData!==''){
+                  console.log(inputData);
+                  setshowModal(false);
+                  addNewDeck(inputData);
+                  setInputData('');
+                }
+              }
+              }
+              >Add</IonButton>
+              <IonButton expand='full'
+                          shape='round'
+                          color='danger'
+                          onClick={()=>{setshowModal(false);
+                          setInputData('')}}>
+                          Cancel
+              </IonButton>
         </IonContent>
       </IonModal>
-
+      </IonContent>                      
       <IonFab  vertical='bottom' horizontal='end' slot='fixed'>
-      <IonFabButton onClick={()=>{setOpenModal(true)}} >
+      <IonFabButton onClick={()=>{setshowModal(true)}} >
             <IonIcon icon={add}></IonIcon>
       </IonFabButton>
       </IonFab>
+      
 
       </IonContent>
     </IonPage>
