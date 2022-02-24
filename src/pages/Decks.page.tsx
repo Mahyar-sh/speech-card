@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonFab, IonFabButton, IonFabList, IonHeader, IonIcon, IonInput, IonItem, IonModal, IonPage, IonRouterLink, IonTab, IonTabButton, IonTitle, IonToolbar } from '@ionic/react';
 import {closeCircle,add} from 'ionicons/icons';
@@ -19,7 +19,38 @@ type DecksPageProps = {
 const DecksPage: React.FC<DecksPageProps> = ({data , addNewDeck, onDeleteItem}) => {
 
   const [inputData,setInputData] = useState('');
-  const [showModal,setshowModal] = useState(false);
+  const [showModal,setshowModal] = useState<boolean>(false);
+  const [searchDeck,setSearchDeck] = useState<string>('');
+  const [newData,SetNewData] = useState<DeckModel[]>(data);
+
+  // search for a deck
+  useEffect(()=>{
+    if(searchDeck === ''){
+      SetNewData(data);
+      console.log('filter is empty');
+    }
+    else{
+      console.log(searchDeck);
+      const allDecks= [...data];
+      const filterDecks = allDecks.filter(item =>{
+        const helpSearchDeck:string = searchDeck.toLowerCase();
+        const theIndex= item.name.toLowerCase().indexOf(helpSearchDeck);
+       if( theIndex !== -1){
+         console.log(searchDeck);
+        console.log(item.name.toLowerCase().indexOf(helpSearchDeck)); 
+        return item;
+       }
+      });
+      SetNewData(filterDecks);
+
+    }
+    console.log(newData);
+  },[searchDeck]);
+
+  const searchInDecksList = (e:any)=>{
+    setSearchDeck(e.detail.value);    
+  };
+
  const inputChange=(e:any)=>{
     setInputData(e.detail.value);
  };
@@ -61,7 +92,13 @@ const onHandleDeleteItem= (i:number)=>{
             <IonTitle size="large">Decks</IonTitle>
           </IonToolbar>
         </IonHeader>
-        {decks(data)}
+        <IonItem>
+          <IonInput placeholder='Search Deck'
+                    style={{margin:'10px 5px'}}
+                    value={searchDeck}
+                    onIonChange={(e)=>{searchInDecksList(e)}} />
+        </IonItem>
+        {decks(newData)}
 
          {/* <IonFab  vertical='bottom' horizontal='end' slot='fixed'>
           <IonFabButton>
@@ -104,9 +141,7 @@ const onHandleDeleteItem= (i:number)=>{
               <IonButton expand='full' 
               shape='round'
               onClick={(e)=>{
-                console.log(inputData);
                 if(inputData!==''){
-                  console.log(inputData);
                   setshowModal(false);
                   addNewDeck(inputData);
                   setInputData('');
