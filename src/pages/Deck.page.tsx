@@ -30,7 +30,7 @@ const DeckPage: React.FC<DeckProps> = ({deck, onDeleteWord, onAddWord})=>{
                 return(
                     <IonItem key={index}>
                         <IonCard className='wordCard row'>
-                            {word.word}
+                            {word.word} <br/>
                             {word.meaning}
                         </IonCard>
                         <DeleteWordButton onDeleteWords={()=>{
