@@ -13,7 +13,38 @@
 .deleteItem{
     flex-basis: 20%;
 }
-
+ion-item-sliding a{
+    color: black;
+    text-decoration: none;
+}
+ion-item{
+    /* margin: 5px; */
+}
+ion-icon{
+    font-size: x-large;
+    width: 30px;   
+}
+i{
+    /* font-size: large; */
+    color: white;
+    width: 30px; 
+    font-size: x-large;
+}
+ion-input {
+    --color:blue;
+    --placeholder-color	: red;
+    --placeholder-opacity: 0.9;
+}
+ion-input:focus{
+    border-bottom: blue;
+}
+input::placeholder{
+    color:blue;
+    opacity: 0.5;
+}
+input:focus{
+    border-bottom: 2px solid #fff;
+}
 .wordCard{
     display: block;
     width: 100%;
