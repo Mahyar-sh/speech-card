@@ -48,10 +48,16 @@ setupIonicReact();
 const App: React.FC = () => {
   const [data,setData]= useState<DeckModel[]>(firstWords);
 
+  const editDeckName = (index:number,newName:string)=>{
+    const oldData = [...data];
+    oldData[index].name= newName;
+    setData(oldData);
+  };
+
   const addNewDeck = (info:any):void =>{
     
     const newDeck:DeckModel= {name:info,words:[]};
-    const oldData:DeckModel[]= [...data];
+    const oldData= [...data];
     oldData.push(newDeck);  
     setData(oldData);
   };
@@ -88,27 +94,28 @@ const App: React.FC = () => {
             <DecksPage data={data}
                        addNewDeck={addNewDeck}
                        onDeleteItem={(i:number)=> onDeleteDeck(i)}
+                       editDeckName={(num,name)=>editDeckName(num,name)}
             />
           </Route>
-          {data.map((item:DeckModel, index)=> {
-            const deckIndex= index;
-            return(
-                <Route key={index} path={`/decks/${item.name}`} >
-                  <DeckPage onAddWord={(word, meaning)=>{
-                    addNewWord(word, meaning, deckIndex)
-                  }} deck={item} onDeleteWord={(cardIndex)=> {
-                    onDeleteWords(cardIndex, deckIndex)
-                  }}/>
-                </Route>
-            );
-          })}
+            {data.map((item:DeckModel, index)=> {
+              const deckIndex= index;
+              return(
+                  <Route key={index} path={`/decks/${item.name}`} >
+                    <DeckPage onAddWord={(word, meaning)=>{
+                      addNewWord(word, meaning, deckIndex)
+                    }} deck={item} onDeleteWord={(cardIndex)=> {
+                      onDeleteWords(cardIndex, deckIndex)
+                    }} />
+                  </Route>
+              );
+            })}
+          
           <Route exact path="/tab2">
             <Tab2 />
           </Route>
           <Route exact path="/tab3">
             <Tab3 />
           </Route>
-          {/*<Decks onDeleteWords={onDeleteWords} onAddWord={addNewWord} data={data} />*/}
           <Route exact path="/">
             <Redirect to="/decks" />
           </Route>

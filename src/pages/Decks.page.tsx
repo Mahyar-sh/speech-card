@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonFab, IonFabButton, IonFabList, IonHeader, IonIcon, IonInput, IonItem, IonModal, IonPage, IonRouterLink, IonTab, IonTabButton, IonTitle, IonToolbar } from '@ionic/react';
-import {closeCircle,add} from 'ionicons/icons';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonFab, IonFabButton, IonFabList, IonHeader, IonIcon, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonModal, IonPage, IonRouterLink, IonTab, IonTabButton, IonTitle, IonToolbar } from '@ionic/react';
+import {closeCircle,add, trash, remove} from 'ionicons/icons';
 
 import './Decks.page.css';
 
@@ -14,37 +14,40 @@ type DecksPageProps = {
   data:DeckModel[],
   addNewDeck: (info:any)=> void,
   onDeleteItem:(i:number)=>void,
+  editDeckName:(num:number,newName:string)=>void,
 };
 
-const DecksPage: React.FC<DecksPageProps> = ({data , addNewDeck, onDeleteItem}) => {
+const DecksPage: React.FC<DecksPageProps> = ({data , addNewDeck, onDeleteItem, editDeckName}) => {
 
   const [inputData,setInputData] = useState('');
   const [showModal,setshowModal] = useState<boolean>(false);
+  const [showEditModal,setShowEditModal]= useState<boolean>(false);
+  const [editModalInputData,setEditModalInputData]= useState<string>('');
+  const [editModalIndexNumber,setEditModalIndexNumber]= useState<number>(0);
   const [searchDeck,setSearchDeck] = useState<string>('');
   const [newData,SetNewData] = useState<DeckModel[]>(data);
 
+  // check 
+  useEffect(()=>{
+    SetNewData(data);
+  },[data])
   // search for a deck
   useEffect(()=>{
     if(searchDeck === ''){
       SetNewData(data);
-      console.log('filter is empty');
     }
     else{
-      console.log(searchDeck);
       const allDecks= [...data];
       const filterDecks = allDecks.filter(item =>{
         const helpSearchDeck:string = searchDeck.toLowerCase();
         const theIndex= item.name.toLowerCase().indexOf(helpSearchDeck);
        if( theIndex !== -1){
-         console.log(searchDeck);
-        console.log(item.name.toLowerCase().indexOf(helpSearchDeck)); 
         return item;
        }
       });
       SetNewData(filterDecks);
 
     }
-    console.log(newData);
   },[searchDeck]);
 
   const searchInDecksList = (e:any)=>{
@@ -59,20 +62,73 @@ const onHandleDeleteItem= (i:number)=>{
   onDeleteItem(i);
   setInputData('');
 }
+
+  const EditModal = ()=>{
+    return(
+      <IonModal isOpen={showEditModal}
+                // initialBreakpoint={0.8}
+                // onDidDismiss={()=>setshowModal(false)}
+                >
+        <IonContent>
+        <IonToolbar>
+          <IonTitle>
+          Edit Deck Name
+          </IonTitle>
+        </IonToolbar>
+         <IonItem style={{margin:'40px 0'}}>
+         <IonInput value={editModalInputData} 
+                onIonChange={(e)=> {setEditModalInputData(e.detail.value!)}} placeholder='Edit Deck Name' >
+                </IonInput>
+         </IonItem>
+          
+              <IonButton expand='full' 
+              shape='round'
+              onClick={(e)=>{
+                if(editModalInputData!==''){
+                  setShowEditModal(false);
+                  editDeckName(editModalIndexNumber,editModalInputData);
+                  setEditModalInputData('');
+                }
+              }
+              }
+              >Edit Deck Name</IonButton>
+              <IonButton expand='full'
+                          shape='round'
+                          color='danger'
+                          onClick={()=>{setShowEditModal(false);
+                          setEditModalInputData('')}}>
+                          Cancel
+              </IonButton>
+        </IonContent>
+      </IonModal>
+    )
+  };
   const decks = (info: DeckModel[] ):any => {
     return(
         info.map((item:any | undefined, index:number ):any | undefined =>{
           return(            
-            <IonCard className='row' key={index}>
-              <div className='itemName'>
-                <Link color='dark' to={`/decks/${item.name}`}>{item.name}</Link>
-              </div>
-              <div className='deleteItem'>
-                <IonItem><DeleteItem 
-                i={index}
-                onDeleteItem={(i:number)=> onHandleDeleteItem(i)}  /></IonItem>
-              </div>
-            </IonCard>
+            <IonItemSliding 
+            className='row' key={index}>
+                <Link style={{width:'100%'}} to={`/decks/${item.name}`}>
+                  <IonItem>
+
+                  {item.name}
+                  </IonItem>
+                  </Link>
+              <IonItemOptions side='end'>
+                <IonItemOption onClick={()=>{setEditModalIndexNumber(index);setShowEditModal(true) }}>
+                  <IonIcon>
+                    <i className="bi bi-pencil-square"></i>
+                  </IonIcon>
+                </IonItemOption>
+
+                <IonItemOption color='danger'  onClick={()=>{onHandleDeleteItem(index)}}>
+                  <IonIcon icon={trash}></IonIcon>
+                </IonItemOption>
+              </IonItemOptions>
+              
+            </IonItemSliding>
+            
           );
         } 
       )
@@ -93,6 +149,7 @@ const onHandleDeleteItem= (i:number)=>{
           </IonToolbar>
         </IonHeader>
         <IonItem>
+        <IonLabel position='floating'>Search for a deck</IonLabel>
           <IonInput placeholder='Search Deck'
                     style={{margin:'10px 5px'}}
                     value={searchDeck}
@@ -158,7 +215,10 @@ const onHandleDeleteItem= (i:number)=>{
               </IonButton>
         </IonContent>
       </IonModal>
-      </IonContent>                      
+      </IonContent> 
+      <IonContent>
+        {EditModal()}
+      </IonContent>                     
       <IonFab  vertical='bottom' horizontal='end' slot='fixed'>
       <IonFabButton onClick={()=>{setshowModal(true)}} >
             <IonIcon icon={add}></IonIcon>
