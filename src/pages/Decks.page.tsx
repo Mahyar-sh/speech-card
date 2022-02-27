@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonFab, IonFabButton, IonFabList, IonHeader, IonIcon, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonModal, IonPage, IonRouterLink, IonTab, IonTabButton, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonFab, IonFabButton, IonFabList, IonHeader, IonIcon, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList, IonModal, IonPage, IonRouterLink, IonTab, IonTabButton, IonTitle, IonToolbar } from '@ionic/react';
 import {closeCircle,add, trash, remove} from 'ionicons/icons';
 
 import './Decks.page.css';
@@ -26,6 +26,7 @@ const DecksPage: React.FC<DecksPageProps> = ({data , addNewDeck, onDeleteItem, e
   const [editModalIndexNumber,setEditModalIndexNumber]= useState<number>(0);
   const [searchDeck,setSearchDeck] = useState<string>('');
   const [newData,SetNewData] = useState<DeckModel[]>(data);
+  const listDecksRef = useRef<HTMLIonListElement>(null);
 
   // check 
   useEffect(()=>{
@@ -104,19 +105,24 @@ const onHandleDeleteItem= (i:number)=>{
     )
   };
   const decks = (info: DeckModel[] ):any => {
+
     return(
-        info.map((item:any | undefined, index:number ):any | undefined =>{
+        <IonList ref={listDecksRef} >
+          {info.map((item:any | undefined, index:number ):any | undefined =>{
           return(            
             <IonItemSliding 
-            className='row' key={index}>
+                className='row'
+                key={index}
+                 >
                 <Link style={{width:'100%'}} to={`/decks/${item.name}`}>
                   <IonItem>
 
                   {item.name}
                   </IonItem>
                   </Link>
-              <IonItemOptions side='end'>
-                <IonItemOption onClick={()=>{setEditModalIndexNumber(index);setShowEditModal(true) }}>
+              <IonItemOptions  side='end'>
+                <IonItemOption onClick={()=>{setEditModalIndexNumber(index);setShowEditModal(true);
+                  listDecksRef.current?.closeSlidingItems(); }}>
                   <IonIcon>
                     <i className="bi bi-pencil-square"></i>
                   </IonIcon>
@@ -131,7 +137,8 @@ const onHandleDeleteItem= (i:number)=>{
             
           );
         } 
-      )
+      )}
+        </IonList>
     );
   };
 
@@ -175,56 +182,53 @@ const onHandleDeleteItem= (i:number)=>{
          </IonFab> */}
 
     
-    <IonContent>
-      
-
-    
-      <IonModal isOpen={showModal}
-                // initialBreakpoint={0.8}
-                // onDidDismiss={()=>setshowModal(false)}
-                >
-        <IonContent>
-        <IonToolbar>
-          <IonTitle>
-          ADD A NEW DECK
-          </IonTitle>
-        </IonToolbar>
-         <IonItem style={{margin:'40px 0'}}>
-         <IonInput value={inputData} 
-                onIonChange={(e)=>inputChange(e)} placeholder='Enter a new Deck' >
-                </IonInput>
-         </IonItem>
-          
-              <IonButton expand='full' 
-              shape='round'
-              onClick={(e)=>{
-                if(inputData!==''){
-                  setshowModal(false);
-                  addNewDeck(inputData);
-                  setInputData('');
-                }
-              }
-              }
-              >Add</IonButton>
-              <IonButton expand='full'
-                          shape='round'
-                          color='danger'
-                          onClick={()=>{setshowModal(false);
-                          setInputData('')}}>
-                          Cancel
-              </IonButton>
-        </IonContent>
-      </IonModal>
-      </IonContent> 
-      <IonContent>
-        {EditModal()}
-      </IonContent>                     
-      <IonFab  vertical='bottom' horizontal='end' slot='fixed'>
-      <IonFabButton onClick={()=>{setshowModal(true)}} >
-            <IonIcon icon={add}></IonIcon>
-      </IonFabButton>
-      </IonFab>
-      
+          <IonContent>
+              <IonModal isOpen={showModal}
+                        // initialBreakpoint={0.8}
+                        // onDidDismiss={()=>setshowModal(false)}
+                        >
+                <IonContent>
+                  <IonToolbar>
+                    <IonTitle>
+                    ADD A NEW DECK
+                    </IonTitle>
+                  </IonToolbar>
+                  <IonItem style={{margin:'40px 0'}}>
+                    <IonInput value={inputData} 
+                      onIonChange={(e)=>inputChange(e)} placeholder='Enter a new Deck' >
+                  </IonInput>
+                </IonItem>
+                <IonButton expand='full' 
+                    shape='round'
+                    onClick={(e)=>{
+                      if(inputData!==''){
+                        setshowModal(false);
+                        addNewDeck(inputData);
+                        setInputData('');
+                      }
+                    }
+                    }
+                    >Add
+                </IonButton>
+                <IonButton expand='full'
+                                shape='round'
+                                color='danger'
+                                onClick={()=>{setshowModal(false);
+                                setInputData('')}}>
+                                Cancel
+                </IonButton>
+              </IonContent>
+            </IonModal>
+         </IonContent> 
+          <IonContent>
+              {EditModal()}
+          </IonContent>                     
+            <IonFab style={{padding:'40px'}}  vertical='bottom' horizontal='end' slot='fixed'>
+            <IonFabButton onClick={()=>{setshowModal(true)}} >
+                  <IonIcon icon={add}></IonIcon>
+            </IonFabButton>
+            </IonFab>
+            
 
       </IonContent>
     </IonPage>

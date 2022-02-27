@@ -48,6 +48,13 @@ setupIonicReact();
 const App: React.FC = () => {
   const [data,setData]= useState<DeckModel[]>(firstWords);
 
+  const editWordAndMeaning = (word:string,meaning:string,deckIndex:number,wordIndex:number)=> {
+    const oldData = [...data];
+    const newWord = {word,meaning};
+    oldData[deckIndex].words.splice(wordIndex,1,newWord);
+    setData(oldData);
+  };
+
   const editDeckName = (index:number,newName:string)=>{
     const oldData = [...data];
     oldData[index].name= newName;
@@ -92,10 +99,10 @@ const App: React.FC = () => {
         <IonRouterOutlet>
           <Route path="/decks" exact={true}>
             <DecksPage data={data}
-                       addNewDeck={addNewDeck}
-                       onDeleteItem={(i:number)=> onDeleteDeck(i)}
-                       editDeckName={(num,name)=>editDeckName(num,name)}
-            />
+                      addNewDeck={addNewDeck}
+                      onDeleteItem={(i:number)=> onDeleteDeck(i)}
+                      editDeckName={(num,name)=>editDeckName(num,name)}
+              /> 
           </Route>
             {data.map((item:DeckModel, index)=> {
               const deckIndex= index;
@@ -105,7 +112,8 @@ const App: React.FC = () => {
                       addNewWord(word, meaning, deckIndex)
                     }} deck={item} onDeleteWord={(cardIndex)=> {
                       onDeleteWords(cardIndex, deckIndex)
-                    }} />
+                    }}
+                      editWordAndMeaning={(word,meaning,wordIndex)=>editWordAndMeaning(word,meaning,deckIndex,wordIndex)} />
                   </Route>
               );
             })}
